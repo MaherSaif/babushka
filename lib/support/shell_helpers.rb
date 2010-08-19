@@ -125,8 +125,12 @@ def sed
   host.linux? ? 'sed' : 'gsed'
 end
 
+def file_contains?(text, file)
+  File.read(file).include?(text)
+end
+
 def append_to_file text, file, opts = {}
-  if failable_shell("grep '^#{text}' '#{file}'").stdout.empty?
+  unless file_contains?(text, file) 
     shell %Q{echo "# #{added_by_babushka(text.split("\n").length)}\n#{text.gsub('"', '\"')}" >> #{file}}, opts
   end
 end
